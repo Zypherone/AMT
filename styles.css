@@ -1,0 +1,117 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+.wrapper {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: #f9fbfd;
+}
+
+header {
+  box-shadow: 0 5px 5px 1px #d7d7d7;
+  border-bottom: 1px solid #525252;
+  margin: 0;
+  
+  
+}
+
+header > * {
+  margin-left:  auto;
+  margin-right:  auto;
+  text-align: center;
+  width: 760px;
+}
+
+#container {
+  margin: 30px auto;
+  width: 760px;
+}
+
+ol,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.diary-block {
+  
+  display: flex;
+  height: 100px;
+  justify-content: space-between;
+  padding-left: 30px;
+}
+
+.diary-block:first-child {
+  border-top: 0;
+}
+
+.diary-hour {
+  align-items: center;
+  border-bottom: 1px solid #d6d8db;
+  color: #383d41;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  width: 100px;
+}
+
+.diary-hour span {
+  margin-top: -50px;
+}
+
+.diary-input {
+  border: 0;
+  color: #383d41;
+  background: #e2e3e5;
+  border-bottom: 1px solid #d6d8db;
+  flex-grow: 1;
+  padding: 10px;
+  resize: none;
+}
+/*
+.hour-past .diary-input {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+*/
+.hour-current .diary-input {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.hour-future .diary-input {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.diary-save {
+  color: #004085;
+  background: #cce5ff;
+  border: 1px solid #b8daff;
+  border-top: 0;
+  border-radius: 0 10px 10px 0;
+  cursor: pointer;
+  width: 100px;
+}
+
+.diary-block:first-child .diary-hour,
+.diary-block:first-child .diary-input {
+  border-top: 1px solid#d6d8db;
+}
+
+.diary-block:first-child .diary-save {
+  border-top: 1px solid #b8daff;
