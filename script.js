@@ -1,33 +1,41 @@
+var tempDate = moment();
+
 var startHour   = '09', // 9AM
     endHour     = '17', // 5PM
     currentHour = '',
-    dateToday   = document.getElementById('date-today'),
-    container   = document.getElementById('container');
+    dateToday   = $('#date-today'),
+    container   = $('#container');
 
-dateToday.innerHTML = moment(moment(), 'k').format('LLLL');
+dateToday.html(moment(tempDate, 'k').format('LLLL'));
 
 var workDay = endHour.slice(0,2) - startHour.slice(0,2);
 
-var diary = document.createElement('ol');
+
+
+var diary = $('<ol>');
 
 function template() {
   var template = {
-    body: document.createElement('li'),
-    hour: document.createElement('div'),
-    input: document.createElement('textarea'),
-    save: document.createElement('button')
+    body: $('<li class="diary-block">'),
+    hour: $('<div class="diary-hour">'),
+    //input: $('<textarea class="diary-input editor">'),
+    input: $('<div class="diary-input" contenteditable>'),
+    save: $('<button class="diary-save">&#128190;</textarea>')
   };
-
-  template.body.classList.add('diary-block');
-  template.hour.classList.add('diary-hour');
-  template.input.classList.add('diary-input');
+/*
+  template.body.addClass('diary-block');
+  template.hour.addClass('diary-hour');
+  template.input.addClass('diary-input');
   //template.input.setAttribute('disabled', 'true');
-  template.save.classList.add('diary-save');
-  template.save.innerHTML = '&#128190;';
+  template.save.addClass('diary-save');
+*/
+  //template.save.html('&#128190;');
   
-  template.body.append(template.hour);
-  template.body.append(template.input);
-  template.body.append(template.save);
+  template.body.append(template.hour, template.input, template.save);
+
+  $(template.input).focus(function() {
+    document.execCommand(this, false);
+  });
 
   return template;
 }
@@ -56,9 +64,9 @@ for(t=0;t<=workDay;t++){
 
   var meridiemTime = moment(thisHour, 'HH').format('hhA');
   var militaryTime = parseInt(moment(thisHour, 'HH').format('k'));
-  var militaryTimeNow = parseInt(moment(moment(), 'k').format('k'));
+  var militaryTimeNow = parseInt(moment(tempDate, 'k').format('k'));
 
-  diaryBlock[t].hour.innerHTML = '<span>' + meridiemTime + '<span>';
+  diaryBlock[t].hour.html('<span>' + meridiemTime + '<span>');
   
 
   //var diaryInput = '';
@@ -69,50 +77,33 @@ for(t=0;t<=workDay;t++){
     diaryInput = rawData[militaryTime];
  // }
 
-  diaryBlock[t].input.value = diaryInput;
-  diaryBlock[t].save.setAttribute('data-hour', militaryTime);
+  diaryBlock[t].input.html(diaryInput);
+  diaryBlock[t].save.attr('data-hour', militaryTime);
 
-  //rawData.push(Array('{"' + militaryTime + '": "' + diaryInput + '"}'));
-  //rawData.push(Array());
-  //rawData[militaryTime] = {data: diaryInput};
   rawData[militaryTime] = diaryInput;
 
-
-
-  //data[militaryTime].data = diaryInput;
-  //var temp = militaryTime.data = diaryInput;
-  
-  //data.push(militaryTime: diaryInput});
-  //data
-
-//  console.log(militaryTime < militaryTimeNow, militaryTime,  militaryTimeNow);
-
   if (militaryTime < militaryTimeNow) {
-    diaryBlock[t].body.classList.add('hour-past');
-    diaryBlock[t].input.setAttribute('disabled', 'true');
+    diaryBlock[t].body.addClass('hour-past');
+    diaryBlock[t].input.attr('contenteditable', 'false');
   } 
   else if (militaryTime == militaryTimeNow) {
-    diaryBlock[t].body.classList.add('hour-current');
+    diaryBlock[t].body.addClass('hour-current');
   } 
   else {
-    diaryBlock[t].body.classList.add('hour-future');
+    diaryBlock[t].body.addClass('hour-future');
   }
 
-  diaryBlock[t].save.addEventListener('click', function(){
-    var data = this.previousElementSibling.value;
+  diaryBlock[t].save.on('click', function(){
+    var data = $(this.previousElementSibling).html();
 
-    //rawData[0].data = 'test';
-    rawData[this.getAttribute('data-hour')] = data;
+//    console.log(data);
+
+  
+    rawData[$(this).attr('data-hour')] = data;
     //console.log(rawData);
 
+
     localStorage.setItem('diary', JSON.stringify(rawData));
-    //rawData[militaryTime] = data;
-    //var mhour = this.getAttribute('data-hour');
-    //var clean = rawData.join('');
-    //clean[mhour] = 'test'; //data;
-    //console.log(clean[mhour]);
-    //console.log();
-    //localStorage
   });
 
 
@@ -135,3 +126,4 @@ save.addEventListener('click', function() {
 */
 
 container.append(diary);
+//$(".editor")
