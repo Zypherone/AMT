@@ -8,17 +8,14 @@ var startHour   = '09', // 9AM
     container   = $('#container');
 
 
-
+dateToday.html(moment(tempTime, 'YYYYMMDD k').format('LLLL'));
 
 var workDay = endHour.slice(0,2) - startHour.slice(0,2);
 
 var rawData;
 
 //var view = moment(tempTime).format('YYYYMMDD k');
-
-var tempDate = 'Friday, March 20, 2020 10:18 AM';
-var view = moment(tempDate, 'LLLL').format('YYYYMMDD');
-dateToday.html(moment(tempDate, 'LLLL').format('LLLL'));
+var view = moment().format('YYYYMMDD');
 
 //console.log(view);
 
@@ -43,16 +40,16 @@ function buildDiary(date) {
       //dateNowValue = moment(view, 'YYYYMMDD').format('LLLL');
       //dateNowValue = moment().format('LLLL');
 
-      if (view == moment(tempDate, 'LLLL').format('YYYYMMDD')) {
+      if (view == moment().format('YYYYMMDD')) {
         dateNowValue = 'Today';
       } 
       else {
         dateNowValue = moment(view).format('dddd, LL');
       }
 
-  var datePrev = $('<button class="button-date date-previous" data-date="' + momPrev + '">').html(datePrevValue),
+  var datePrev = $('<button class="date-previous" data-date="' + momPrev + '">').html(datePrevValue),
       dateNow  = $('<button class="date-now">').html(dateNowValue),
-      dateNext = $('<button class="button-date date-next" data-date="' + momNext + '">').html(dateNextValue);
+      dateNext = $('<button class="date-next" data-date="' + momNext + '">').html(dateNextValue);
 
   dateRow.append(datePrev, dateNow, dateNext);
 
@@ -93,8 +90,8 @@ function buildDiary(date) {
 
 
     //var militaryTimeNow = parseInt(moment(view + ' 11', 'YYYYMMDD k').format('k'));
-    var militaryTimeNow = parseInt(moment($('#date-today').html(), 'LLLL').format('k'));
-    //var militaryTimeNow = parseInt(moment().format('k'));
+    //var militaryTimeNow = parseInt(moment(view, 'YYYYMMDD').format('k'));
+    var militaryTimeNow = parseInt(moment().format('k'));
 
     //console.log(militaryTimeNow);
 
@@ -112,38 +109,22 @@ function buildDiary(date) {
     todaysDate = moment(todaysDate, 'LLLL').format('YYYYMMDD');
     
     var isThePast = view < todaysDate;
-    //console.log(isThePast, todaysDate);
+    console.log(isThePast, todaysDate);
     //console.log(todaysDate, isThePast, view);
 
-    //console.log(isThePast, militaryTime < militaryTimeNow);
-
-    if (!isThePast && militaryTime > militaryTimeNow || view > moment(tempDate, 'LLLL').format('YYYYMMDD')) {
-      hourBlock.body.addClass('hour-future');
-    } 
-    else if (!isThePast && militaryTime == militaryTimeNow && view == moment(tempDate, 'LLLL').format('YYYYMMDD')) {
-      hourBlock.body.addClass('hour-current');
-    } 
-    else {
-      hourBlock.body.addClass('hour-past');
-      hourBlock.save.html('&#128273;');
-      hourBlock.body.attr('data-lock', 'true');
-      hourBlock.body.attr('title',  'Not editable');
-      hourBlock.input.attr('contenteditable', 'false');
-    }
-
-    /*
+    console.log(isThePast, militaryTime < militaryTimeNow);
 
     if (isThePast && militaryTime < militaryTimeNow) {
       hourBlock.body.addClass('hour-past');
       hourBlock.input.attr('contenteditable', 'false');
     } 
-    else if (isThePast && militaryTime == militaryTimeNow && view == moment(tempDate, 'LLLL').format('YYYYMMDD')) {
+    else if (militaryTime == militaryTimeNow) {
       hourBlock.body.addClass('hour-current');
     } 
     else {
       hourBlock.body.addClass('hour-future');
     }
-    */
+
     diary.append(hourBlock.body);
 
   }
@@ -163,50 +144,21 @@ function storageDiaryObj(hour, data) {
 }
 
 $(document).on('click', '.diary-save', function() {
+  var input = $(this.previousElementSibling).html();
 
-  if ($(this.parentElement).attr('data-lock') == 'true') {
+  //rawData[$(this).attr('data-hour')] = data;
+  //JSON.stringify(rawData);
+  var hour = $(this).attr('data-hour');
+  var data = storageDiaryObj(hour, input);
 
-    var password = prompt('Enter password:');
-
-    if (password == 'test' && confirm('Are you sure you want to edit this locked entry?')) {
-      $(this.parentElement).attr('data-lock', 'false');
-      $(this).html('&#128190;');
-      $(this.previousElementSibling).attr('contenteditable', 'true');
-      $(this.parentElement).attr('title',  '');
-    }
-/*
-    hourBlock.body.addClass('hour-past');
-    hourBlock.save.html('&#128273;');
-    hourBlock.save.attr('data-lock', 'true');
-    hourBlock.body.attr('title',  'Not editable');
-    hourBlock.input.attr('contenteditable', 'false
-*/
-    
-  }
-  else {
-
-    if ($(this.parentElement).attr('data-lock') == 'false') {
-      $(this.parentElement).attr('data-lock', 'true');
-      $(this).html('&#128273;');
-      $(this.previousElementSibling).attr('contenteditable', 'false');
-      $(this.parentElement).attr('title',  'Not editable');
-    }
-
-    var input = $(this.previousElementSibling).html();
-    //rawData[$(this).attr('data-hour')] = data;
-    //JSON.stringify(rawData);
-    var hour = $(this).attr('data-hour');
-    var data = storageDiaryObj(hour, input);
-    console.log(data);
-    //console.log(data);
-    localStorage.setItem(view, data);
-  }
+  //console.log(data);
+  localStorage.setItem(view, data);
 })
 
 buildDiary(view);
 
-$(document).on('click', '.button-date', function() {
-  
+$(document).on('click', 'button', function() {
+
   //console.log($(this).attr('data-date'));
   buildDiary($(this).attr('data-date'));
 })

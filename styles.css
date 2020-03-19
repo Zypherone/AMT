@@ -18,23 +18,87 @@ body {
 }
 
 header {
+  background: #fff;
   box-shadow: 0 5px 5px 1px #d7d7d7;
   border-bottom: 1px solid #525252;
+  height: 170px;
   margin: 0;
-  
+  position: -webkit-sticky;
+  position: sticky;
+  top: -105px;
+  z-index: 999;
   
 }
 
-header > * {
-  margin-left:  auto;
-  margin-right:  auto;
+h1,
+h2,
+h3 {
+  margin: 0 auto;
   text-align: center;
   width: 760px;
+}
+
+h1 {
+  padding-top: 25px;
+}
+
+h2 {
+  font-size: .9em;
+  font-weight: normal;
+  margin-bottom: 5px;
+  margin-top: -5px;
+}
+
+#date-row {
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  /*justify-content: space-around;*/
+  padding: 15px 0;
+  width: 760px;
+}
+
+#date-row button {
+  color: #1b1e21;
+  cursor: pointer;
+  color: #383d41;
+  background-color: #e2e3e5;
+  border: 1px solid #d6d8db;
+  border-radius: 5px;
+  font-size: 1em;
+  padding: 10px;
+}
+
+.date-previous {
+
+}
+.date-previous:before {
+  content: "\00AB ";
+}
+#date-row .date-now {
+  color: #856404;
+  cursor: auto;
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+  margin: 0 10px;
+  
+}
+.date-next {
+  
+}
+
+.date-next:after {
+  content: " \00BB";
 }
 
 #container {
   margin: 30px auto;
   width: 760px;
+}
+
+.container {
+  position: relative;
+  z-index: 1  ;
 }
 
 ol,
@@ -47,9 +111,18 @@ li {
 .diary-block {
   
   display: flex;
-  height: 100px;
+  min-height: 100px;
   justify-content: space-between;
-  padding-left: 30px;
+  /*padding-left: 30px;*/
+}
+
+.diary-block.hour-current {
+  /*
+  box-shadow: 220px 0 #f8d7da, -220px 0 #f8d7da;
+  border: 1px solid #f8d7da;
+  border-radius: 10px;
+  overflow: hidden;
+  */
 }
 
 .diary-block:first-child {
@@ -58,16 +131,19 @@ li {
 
 .diary-hour {
   align-items: center;
+  border-left: 1px solid #d6d8db;
   border-bottom: 1px solid #d6d8db;
+  border-radius: 10px 0 0 10px;
   color: #383d41;
   display: flex;
   justify-content: flex-end;
+  align-items: flex-start;
   padding: 10px;
-  width: 100px;
+  width: 75px;
 }
 
 .diary-hour span {
-  margin-top: -50px;
+  
 }
 
 .diary-input {
@@ -77,6 +153,7 @@ li {
   border-bottom: 1px solid #d6d8db;
   
   flex-grow: 1;
+  overflow: auto;
   padding: 10px;
   position: relative;
   resize: none;
@@ -96,6 +173,14 @@ li {
   border-color: #c3e6cb;
 }
 */
+
+.hour-past[data-lock="true"] .diary-input::after {
+  content: "\1F512";
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
 .hour-current .diary-input {
   color: #721c24;
   background-color: #f8d7da;
@@ -105,7 +190,7 @@ li {
 .hour-future .diary-input {
   color: #155724;
   background-color: #d4edda;
-  border-color: #c3e6cb;
+  border-color: #c3e6cb;;
 }
 
 .diary-save {
@@ -115,12 +200,21 @@ li {
   border-top: 0;
   border-radius: 0 10px 10px 0;
   cursor: pointer;
-  width: 100px;
+  width: 75px;
 }
 
-.hour-past .diary-input + .diary-save {
-  cursor: auto;
+.hour-past .diary-save {
+  color: #383d41;
+  background: #e2e3e5;
+  border-color: #d6d8db;
 }
+/*
+.hour-current .diary-save {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+*/
 
 .diary-block:first-child .diary-hour,
 .diary-block:first-child .diary-input {
@@ -129,3 +223,12 @@ li {
 
 .diary-block:first-child .diary-save {
   border-top: 1px solid #b8daff;
+}
+
+@media(max-width: 760px) {
+    header,
+    #container,
+    h1, h2, h3, #date-row {
+      width: 100%;
+    }
+}
