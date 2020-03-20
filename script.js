@@ -50,9 +50,12 @@ function buildDiary(date) {
         dateNowValue = moment(view).format('dddd, LL');
       }
 
-  var datePrev = $('<button class="button-date date-previous" data-date="' + momPrev + '">').html(datePrevValue),
+  var dateShortPrev = moment(datePrevValue, 'dddd LL').format('DD ddd'),
+      dateShortNext = moment(dateNextValue, 'dddd LL').format('DD ddd');
+
+  var datePrev = $('<button class="button-date date-previous" data-short="' + dateShortPrev + '" data-long="' + datePrevValue + '" data-date="' + momPrev + '">').html(''),
       dateNow  = $('<button class="date-now">').html(dateNowValue),
-      dateNext = $('<button class="button-date date-next" data-date="' + momNext + '">').html(dateNextValue);
+      dateNext = $('<button class="button-date date-next" data-short="' + dateShortNext + '" data-long="' + dateNextValue + '" data-date="' + momNext + '">').html('');
 
   dateRow.append(datePrev, dateNow, dateNext);
 

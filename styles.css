@@ -225,10 +225,33 @@ li {
   border-top: 1px solid #b8daff;
 }
 
+.date-previous::after {
+  content: attr(data-long);
+}
+
+.date-next::before {
+  content: attr(data-long);
+}
+
 @media(max-width: 760px) {
     header,
     #container,
     h1, h2, h3, #date-row {
       width: 100%;
+    }
+
+    .date-previous::before,
+    .date-next::after {
+      content: "";
+    }
+
+    .date-previous::after,
+    .date-next::before {
+      content: attr(data-short);
+    }
+
+    .diary-date,
+    .diary-save {
+      border-radius: 0;
     }
 }
