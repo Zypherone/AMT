@@ -150,6 +150,9 @@ li {
   border: 0;
   color: #383d41;
   background: #e2e3e5;
+
+  
+
   border-bottom: 1px solid #d6d8db;
   
   flex-grow: 1;
@@ -185,6 +188,13 @@ li {
   color: #721c24;
   background-color: #f8d7da;
   border-color: #f5c6cb;
+
+  background: linear-gradient(180deg, black 0%, white 1%) 0 57px;
+  background-size: 100% 30px;
+
+  background: linear-gradient(180deg, #f5c6cb 0, #f8d7da 1px) 0 7px;
+  background-size: 100% 19px;
+
 }
 
 .hour-future .diary-input {
