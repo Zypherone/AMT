@@ -120,6 +120,8 @@ function buildDiary(date) {
 
     //console.log(isThePast, militaryTime < militaryTimeNow);
 
+    hourBlock.body.attr("id", "BLOCK" + meridiemTime);
+
     if (!isThePast && militaryTime > militaryTimeNow || view > moment(tempDate, 'LLLL').format('YYYYMMDD')) {
       hourBlock.body.addClass('hour-future');
     } 
@@ -152,6 +154,17 @@ function buildDiary(date) {
   }
 
   container.append(diary);
+  /*
+  setTimeout(function() {
+    window.location.hash = "BLOCK09AM";
+  }, 10000);
+  */
+/*
+ $('html, body').animate({
+    scrollTop: $('#BLOCK09AM').offset().top
+  }, 800, function(){
+  });
+*/
 }
 
 function storageDiaryObj(hour, data) {

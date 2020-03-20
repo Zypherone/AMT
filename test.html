@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>TEST</title>
+  </head>
+  <body>
+
+<style>
+article {
+  scroll-snap-type: y proximity;
+  /* Reserve space for header plus some extra space for sneak peeking. */
+  scroll-padding-top: 15vh;
+  overflow-y: scroll;
+}
+section {
+  /* Snap align start. */
+  scroll-snap-align: start;
+}
+header {
+  position: fixed;
+  height: 10vh;
+}
+</style>
+
+<article>
+  <header> Header </header>
+  <section> Section One </section>
+  <section> Section Two </section>
+  <section> Section Three </section>
+</article>
+  </body>
+</html>
