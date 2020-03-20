@@ -250,7 +250,11 @@ li {
       content: attr(data-short);
     }
 
-    .diary-date,
+    #date-row {
+      justify-content: space-between;
+    }
+
+    .diary-hour,
     .diary-save {
       border-radius: 0;
     }
