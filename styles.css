@@ -272,4 +272,8 @@ li {
     .diary-save {
       border-radius: 0;
     }
+
+    ,diary-input {
+      font-size: 1em;
+    }
 }
