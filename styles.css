@@ -19,8 +19,8 @@ body {
 
 header {
   background: #fff;
-  box-shadow: 0 5px 5px 1px #d7d7d7;
-  border-bottom: 1px solid #525252;
+  box-shadow: 0 5px 5px 1px  rgba(229, 229, 229, 0.3);
+  border-bottom: 1px solid #d6d8db;
   height: 170px;
   margin: 0;
   position: -webkit-sticky;
@@ -268,12 +268,27 @@ li {
       justify-content: space-between;
     }
 
+    #date-row .date-previous {
+      border-radius: 0 10px 10px 0;
+      padding-right: 20px;
+    }
+    
+    #date-row .date-next {
+      border-radius: 10px 0 0 10px;
+      padding-left: 20px;
+    }
+
+    #container ol {
+      margin-left: -1px;
+      margin-right: -1px;
+    }
+
     .diary-hour,
     .diary-save {
       border-radius: 0;
     }
 
-    ,diary-input {
+    .diary-input {
       font-size: 1em;
     }
 }
