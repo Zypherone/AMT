@@ -195,7 +195,7 @@ function buildHourBlock(viewDate) {
   var diary = $('<ol>');
 
   // Lets repeat the code for each hour of a working day.
-  for(h=0;h<hoursInAWorkDay;h++) {
+  for(h=0;h<=hoursInAWorkDay;h++) {
 
     // Lets set the hour for each block;
     var thisHour = parseInt(startOfWorkDay) + h;
