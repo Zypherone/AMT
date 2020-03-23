@@ -1,231 +1,250 @@
-var tempTime = moment(); //'20200319 11'; //moment();
+// Lets prepare the variables.
+var view             = moment(timeData).format('YYYYMMDD'),
+    dateFormat       = 'dddd, DD MMMM YYYY HH:mm A',
+    buttonDateFormat = 'dddd, DD MMMM',
+    viewFormat       = 'YYYYMMDD',
+    diaryBody        = $('#container'),
+    diaryDateRow     = $('#date-row'),
+    rawData          = {}
+    currentDate      = view;
 
-var startHour   = '09', // 9AM
-    endHour     = '17', // 5PM
-    currentHour = '',
-    dateRow     = $('#date-row'),
-    dateToday   = $('#date-today'),
-    container   = $('#container');
+$('#date-today').html(moment(timeData).format(dateFormat));
 
+var hoursInAWorkDay = endOfWorkDay - startOfWorkDay;
 
+var dataTimeBlock = {};
 
-
-var workDay = endHour.slice(0,2) - startHour.slice(0,2);
-
-var rawData;
-
-//var view = moment(tempTime).format('YYYYMMDD k');
-
-var tempDate = 'Friday, March 20, 2020 10:18 AM';
-var view = moment(tempDate, 'LLLL').format('YYYYMMDD');
-dateToday.html(moment(tempDate, 'LLLL').format('LLLL'));
-
-//console.log(view);
-
-function buildDiary(date) {
-
-  view = date;
-
-  //console.log(view);
-
-  dateRow.empty();
-  container.empty();
-
-  var datePrevValue = moment(view, 'YYYYMMDD').subtract('1', 'day').format('dddd, LL'),
-      
-      dateNextValue = moment(view, 'YYYYMMDD').add('1','day').format('dddd, LL');
-
-  var momPrev = moment(datePrevValue, 'dddd, LL').format('YYYYMMDD'),
-      momNext = moment(dateNextValue, 'dddd, LL').format('YYYYMMDD');
-
-      //dateNowValue = dateNowValue == $('date-today').html() ? 'Today' : dateNowValue;
-
-      //dateNowValue = moment(view, 'YYYYMMDD').format('LLLL');
-      //dateNowValue = moment().format('LLLL');
-
-      if (view == moment(tempDate, 'LLLL').format('YYYYMMDD')) {
-        dateNowValue = 'Today';
-      } 
-      else {
-        dateNowValue = moment(view).format('dddd, LL');
-      }
-
-  var dateShortPrev = moment(datePrevValue, 'dddd LL').format('DD ddd'),
-      dateShortNext = moment(dateNextValue, 'dddd LL').format('DD ddd');
-
-  var datePrev = $('<button class="button-date date-previous" data-short="' + dateShortPrev + '" data-long="' + datePrevValue + '" data-date="' + momPrev + '">').html(''),
-      dateNow  = $('<button class="date-now">').html(dateNowValue),
-      dateNext = $('<button class="button-date date-next" data-short="' + dateShortNext + '" data-long="' + dateNextValue + '" data-date="' + momNext + '">').html('');
-
-  dateRow.append(datePrev, dateNow, dateNext);
-
-  var diary = $('<ol>');
-
-  function template() {
-    var template = {
-      body: $('<li class="diary-block">'),
-      hour: $('<div class="diary-hour">'),
-      input: $('<div class="diary-input" contenteditable>'),
-      save: $('<button class="diary-save">&#128190;</textarea>')
+// Lets build a template for the each hour of the time blocks.
+var template = {
+  html: function () {
+    
+    // Build the basic HTML structure
+    var template =  {
+      body : $('<li class="diary-block">'),
+      time : $('<div class="diary-hour">'),
+      input: $('<div class="diary-input">'),
+      button: $('<button class="diary-button">')
     };
+
+    // Prep for push to browser
+    template.body.append(
+      template.time,
+      template.input,
+      template.button
+    );
+
+    // Set the time block so we can pretify it.
+    template.time = template.time.append('<span>');
     
-    template.body.append(template.hour, template.input, template.save);
-
-    $(template.input).focus(function() {
-      document.execCommand(this, false);
-    });
-
     return template;
+
+  },
+  time: function() {
+    // Build the time values for functions/
+    return {
+      meridiem: function(hour) { return moment(hour, 'HH').format('hA') },
+      military: function(hour) { return parseInt(moment(hour ? hour : timeData, 'YYYYMMDDHHkk').format('YYYYMMDDkk')) },
+      date    : function(date) { return moment(data ? date : timeData).format('YYYYMMDD') }
+    }
   }
+}
 
-  //console.log(view);
+// Save function 
+function saveDiaryData(date, html) {
 
-  var localData = localStorage.getItem(view);
-  rawData = localData ? JSON.parse(localData) : {};
+  // Prep date index for local storage.
+  var date = currentDate + moment(date, 'hA').format('kk');
 
-  //console.log('obj', rawData);
+  // Prep an array to push into local storage
+  rawDiaryData[date] = html;
 
-  for(t=0;t<=workDay;t++){
-
-    var hourBlock = template();
-
-    var thisHour = parseInt(startHour)+t;
-
-    var meridiemTime = moment(thisHour, 'HH').format('hhA');
-    var militaryTime = parseInt(moment(thisHour, 'HH').format('k'));
-
-
-    //var militaryTimeNow = parseInt(moment(view + ' 11', 'YYYYMMDD k').format('k'));
-    var militaryTimeNow = parseInt(moment($('#date-today').html(), 'LLLL').format('k'));
-    //var militaryTimeNow = parseInt(moment().format('k'));
-
-    //console.log(militaryTimeNow);
-
-    hourBlock.hour.html('<span>' + meridiemTime + '<span>'); 
-
-    diaryInput = rawData[militaryTime];
+  // Save to local storage 
+  localStorage.setItem(currentDate, JSON.stringify(rawDiaryData));
   
-    hourBlock.input.html(diaryInput);
-    hourBlock.save.attr('data-hour', militaryTime);
-
-    rawData[militaryTime] = diaryInput;
-
-    //console.log(militaryTimeNow)
-    var todaysDate = $('#date-today').html();
-    todaysDate = moment(todaysDate, 'LLLL').format('YYYYMMDD');
-    
-    var isThePast = view < todaysDate;
-    //console.log(isThePast, todaysDate);
-    //console.log(todaysDate, isThePast, view);
-
-    //console.log(isThePast, militaryTime < militaryTimeNow);
-
-    hourBlock.body.attr("id", "BLOCK" + meridiemTime);
-
-    if (!isThePast && militaryTime > militaryTimeNow || view > moment(tempDate, 'LLLL').format('YYYYMMDD')) {
-      hourBlock.body.addClass('hour-future');
-    } 
-    else if (!isThePast && militaryTime == militaryTimeNow && view == moment(tempDate, 'LLLL').format('YYYYMMDD')) {
-      hourBlock.body.addClass('hour-current');
-    } 
-    else {
-      hourBlock.body.addClass('hour-past');
-      hourBlock.save.html('&#128273;');
-      hourBlock.body.attr('data-lock', 'true');
-      hourBlock.body.attr('title',  'Not editable');
-      hourBlock.input.attr('contenteditable', 'false');
-    }
-
-    /*
-
-    if (isThePast && militaryTime < militaryTimeNow) {
-      hourBlock.body.addClass('hour-past');
-      hourBlock.input.attr('contenteditable', 'false');
-    } 
-    else if (isThePast && militaryTime == militaryTimeNow && view == moment(tempDate, 'LLLL').format('YYYYMMDD')) {
-      hourBlock.body.addClass('hour-current');
-    } 
-    else {
-      hourBlock.body.addClass('hour-future');
-    }
-    */
-    diary.append(hourBlock.body);
-
-  }
-
-  container.append(diary);
-  /*
-  setTimeout(function() {
-    window.location.hash = "BLOCK09AM";
-  }, 10000);
-  */
-/*
- $('html, body').animate({
-    scrollTop: $('#BLOCK09AM').offset().top
-  }, 800, function(){
-  });
-*/
-}
-
-function storageDiaryObj(hour, data) {
-
-
-  //JSON.stringify(rawData);
-
-  rawData[hour] = data;
-
-  return JSON.stringify(rawData);
 
 }
 
-$(document).on('click', '.diary-save', function() {
+// Let prepare the eventsButton function so we can save or swtich dates.
+function eventsButton() {
 
-  if ($(this.parentElement).attr('data-lock') == 'true') {
-
-    var password = prompt('Enter password:');
-
-    if (password == 'test' && confirm('Are you sure you want to edit this locked entry?')) {
-      $(this.parentElement).attr('data-lock', 'false');
-      $(this).html('&#128190;');
-      $(this.previousElementSibling).attr('contenteditable', 'true');
-      $(this.parentElement).attr('title',  '');
-    }
-/*
-    hourBlock.body.addClass('hour-past');
-    hourBlock.save.html('&#128273;');
-    hourBlock.save.attr('data-lock', 'true');
-    hourBlock.body.attr('title',  'Not editable');
-    hourBlock.input.attr('contenteditable', 'false
-*/
-    
+  // Events button for date, prev, and next.
+  if ($(this).hasClass('button-date')) {
+    buildHourBlock($(this).attr('data-date'));
   }
+  // Or we save, unlock diary entiries.
   else {
 
-    if ($(this.parentElement).attr('data-lock') == 'false') {
-      $(this.parentElement).attr('data-lock', 'true');
-      $(this).html('&#128273;');
-      $(this.previousElementSibling).attr('contenteditable', 'false');
-      $(this.parentElement).attr('title',  'Not editable');
+    // Asign var with the appropriate elements.
+    var hourBlock  = $(this.parentElement),
+        timeBlock  = $(this.previousElementSibling.previousElementSibling),
+        inputBlock = $(this.previousElementSibling);
+
+    // Lets check if the diary entry is locked, is so unlock
+    if (hourBlock.attr('data-lock') === 'true') {
+      var password = prompt('Enter Password to unlock this diary.');
+
+      // Apply password check and confirm if entry is to be updated.
+      if ( password == passwordChoice 
+          && confirm('Are you sure you want to edit this entry?')) {
+        
+        hourBlock.attr('data-lock', false);
+        inputBlock.attr('contenteditable', true);
+        
+      }
+    }
+    // Lets save entry.
+    else {
+      
+      // If this is past entry, lock once saved.
+      if (hourBlock.attr('data-lock') === 'false') {
+        hourBlock.attr('data-lock', true);
+        inputBlock.attr('contenteditable', false);
+      }
+      
+      saveDiaryData(timeBlock.html(), inputBlock.html());
+    }
+  }
+
+}
+
+// Build the buttons for the prev, next and current buttons.
+function buildDateButtons(view) {
+  
+  // Build the basic HTML structuce.
+  var button = {
+    html: {
+      previous: $('<button>'),
+      current: $('<button>'),
+      next: $('<button>')
+    },
+    // Lets determind the values for prev, next, or current date.
+    value: {
+      previous: moment(view, 'YYYYMMDD').subtract('1', 'day'),
+      next: moment(view, 'YYYYMMDD').add('1', 'day'),
+      current: function() {
+        if (view == moment(timeData).format('YYYYMMDD')) {
+          return 'Today';
+        } else {
+          return moment(view, 'YYYYMMDD').format(buttonDateFormat);
+        }
+      }
+    },
+    data: {
+      previous: function() { return moment(button.value.previous).format('YYYYMMDD') },
+      next: function() { return moment(button.value.next).format('YYYYMMDD') },
+    },
+    short: {
+      previous: function() { return moment(button.value.previous).format('DD ddd') },
+      next: function() { return moment(button.value.next).format('DD ddd') }
+    },
+    long: {
+      previous: function() { return moment(button.value.previous).format(buttonDateFormat) },
+      next: function() { return moment(button.value.next).format(buttonDateFormat) }
+    }
+  }
+
+  /*
+    Lets add the clases and data-* to the date buttons.
+    data-short is for short hand view for mobile
+    data-long is for standard browser view
+    data-date is for click function to switch dates
+  */
+
+  button.html.previous
+    .addClass('button-date date-previous')
+    .attr('data-short', button.short.previous())
+    .attr('data-long', button.long.previous())
+    .attr('data-date', button.data.previous());
+
+  button.html.current
+    .addClass('date-current')
+    .html(button.value.current());
+
+  button.html.next
+    .addClass('button-date date-next')
+    .attr('data-short', button.short.next())
+    .attr('data-long', button.long.next())
+    .attr('data-date', button.data.next());
+
+  // Lets push this to the browser.
+  diaryDateRow
+    .append(
+      button.html.previous, 
+      button.html.current, 
+      button.html.next
+    );
+}
+
+function buildHourBlock(viewDate) {
+
+  // Lets set the currenDate variable 
+  currentDate = viewDate;
+
+  // Lets check to see if there is anything in localStorage
+  var localData = localStorage.getItem(currentDate);
+  rawDiaryData = localData ? JSON.parse(localData) : {};
+
+  diaryBody.empty();
+  diaryDateRow.empty();
+
+  // Lets build the date buttons, previous, next and show todays or current date.
+  buildDateButtons(currentDate);
+
+
+  // Create an ordered list for the hour block. Will append later.
+  var diary = $('<ol>');
+
+  // Lets repeat the code for each hour of a working day.
+  for(h=0;h<=hoursInAWorkDay;h++) {
+
+    // Lets set the hour for each block;
+    var thisHour = parseInt(startOfWorkDay) + h;
+
+    // Pull the hourBlock template
+    var hourBlock = template.html(),
+        time      = template.time();
+
+    hourBlock.time.html(time.meridiem(thisHour));
+
+    // Lets prep a variable to compare dates/time
+    var compareTimeDate = (thisHour.toString().length == 1 ? '0' : '' ) + thisHour;
+        compareTimeDate = currentDate + compareTimeDate;
+
+    //rawDiaryData[compareTimeDate] = rawDiaryData[compareTimeDate];
+    hourBlock.input.html(rawDiaryData[compareTimeDate]);
+
+    // Apply appropriate classes for each time bloack.
+    // Is the timeblock in the future?
+    if (time.military(compareTimeDate) > time.military()) {
+      hourBlock.body.addClass('hour-future');
+      hourBlock.input.attr('contenteditable', true);
+    }
+    // Is the timeblock is now?
+    else if (time.military(compareTimeDate) == time.military()) {
+      hourBlock.body.addClass('hour-current');
+      hourBlock.input.attr('contenteditable', true);
+    }
+    // Then all timeblocks are in the past. Lock them.
+    else {
+      hourBlock.body.addClass('hour-past').attr('data-lock', 'true');
     }
 
-    var input = $(this.previousElementSibling).html();
-    //rawData[$(this).attr('data-hour')] = data;
-    //JSON.stringify(rawData);
-    var hour = $(this).attr('data-hour');
-    var data = storageDiaryObj(hour, input);
-    console.log(data);
-    //console.log(data);
-    localStorage.setItem(view, data);
+    // Lets append this to the diary.
+    diary.append(
+      hourBlock.body
+    );
   }
-})
 
-buildDiary(view);
+  // Lets push the diary onto the browser and into the container block.
+  $('#container').append(
+    diary
+  );
 
-$(document).on('click', '.button-date', function() {
-  
-  //console.log($(this).attr('data-date'));
-  buildDiary($(this).attr('data-date'));
-})
+}
 
+// Lets start and build todays diary.
+buildHourBlock(view);
 
-//$(".editor")
+// Lets add the event listners for .diary-button and .button-date.
+$(document).on('click', '.diary-button', eventsButton);
+$(document).on('click', '.button-date', eventsButton);

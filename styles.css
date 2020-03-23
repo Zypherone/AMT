@@ -166,17 +166,7 @@ li {
 
 .diary-input:focus {
   z-index: 1;
-  /*
-  box-shadow: -500px 0 0 rgba(255, 0, 0, .4), 500px 0 0 rgba(255, 0, 0, .4);
-  */
 }
-/*
-.hour-past .diary-input {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb;
-}
-*/
 
 .hour-past[data-lock="true"] .diary-input::after {
   content: "\1F512";
