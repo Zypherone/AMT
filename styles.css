@@ -75,7 +75,7 @@ h2 {
 .date-previous:before {
   content: "\00AB ";
 }
-#date-row .date-now {
+#date-row .date-current {
   color: #856404;
   cursor: auto;
   background-color: #fff3cd;
@@ -207,7 +207,7 @@ li {
   background-size: 100% 19px;
 }
 
-.diary-save {
+.diary-button {
   color: #004085;
   background: #cce5ff;
   border: 1px solid #b8daff;
@@ -217,7 +217,8 @@ li {
   width: 75px;
 }
 
-.hour-past .diary-save {
+
+.hour-past .diary-button {
   color: #383d41;
   background: #e2e3e5;
   border-color: #d6d8db;
@@ -230,12 +231,33 @@ li {
 }
 */
 
+.hour-current .diary-button,
+.hour-future .diary-button,
+.hour-past[data-lock="false"] .diary-button {
+  color: #004085;
+  background: #cce5ff;
+  border: 1px solid #b8daff;
+}
+
+.hour-past[data-lock="true"] .diary-button:before {
+  content: "\1F5DD";
+}
+
+.hour-past .diary-button:before {
+  content: "\1F510";
+}
+.hour-current .diary-button:before,
+.hour-future .diary-button:before,
+.hour-past[data-lock="false"] .diary-button:before {
+  content: "\1F4BE";
+}
+
 .diary-block:first-child .diary-hour,
 .diary-block:first-child .diary-input {
   border-top: 1px solid#d6d8db;
 }
 
-.diary-block:first-child .diary-save {
+.diary-block:first-child .diary-button {
   border-top: 1px solid #b8daff;
 }
 
