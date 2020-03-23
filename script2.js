@@ -1,33 +1,8 @@
-/*
-  For debugging purposes
-
-  Uncomment this section to manually override the day or time.
-
-*/
-
-var debug = {
-    on: true,
-  date: '20/03/2020', // DD/MM/YYYY
-  time: '11:18 AM', // HH:mm (AM or PM)
-  query: function() {
-    return moment(this.date + ' ' + this.time, 'DD/MM/YY HH:mm A');
-  },
-  query2: this.date + ' ' + this.time
-}
-
-// Lets start the moment function for time manipulate!
-var timeData = !debug.on ? moment() : debug.query();
-
-// Update password here.
-var passwordChoice = 'test';
-
 // Lets prepare the variables.
 var view             = moment(timeData).format('YYYYMMDD'),
     dateFormat       = 'dddd, DD MMMM YYYY HH:mm A',
     buttonDateFormat = 'dddd, DD MMMM',
     viewFormat       = 'YYYYMMDD',
-    startOfWorkDay   = '09',
-    endOfWorkDay     = '17',
     diaryBody        = $('#container'),
     diaryDateRow     = $('#date-row'),
     rawData          = {}
