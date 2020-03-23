@@ -6,9 +6,9 @@
 */
 
 var debug = {
-    on: false,
+    on: true,
   date: '20/03/2020', // DD/MM/YYYY
-  time: '9:18 AM', // HH:mm (AM or PM)
+  time: '11:18 AM', // HH:mm (AM or PM)
   query: function() {
     return moment(this.date + ' ' + this.time, 'DD/MM/YY HH:mm A');
   },
